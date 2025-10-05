@@ -17,8 +17,14 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <ProductSection title="Latest Arrivals" filter="latest" scrollable />
-      <ProductSection title="Best Sellers" filter="popular" scrollable />
+      {/* Latest Arrivals Section */}
+      <section className="mb-5">
+        <ProductSection title="Latest Arrivals" filter="latest" />
+      </section>
+      {/* Best Sellers Section */}
+      <section className="mb-5">
+        <ProductSection title="Best Sellers" filter="popular" />
+      </section>
     </main>
   );
 };

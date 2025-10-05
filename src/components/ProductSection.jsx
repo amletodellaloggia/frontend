@@ -1,35 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/ProductSection.css';
 import ProductCard from './ProductCard';
 
-const API_BASE = 'http://localhost:3000';
-
-const ProductSection = ({ title, filter, scrollable = false }) => {
+const ProductSection = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    let query = '';
-    if (filter === 'latest') query = '?sort=recent';
-    if (filter === 'popular') query = '?sort=popular';
-
-    fetch(`${API_BASE}/products${query}`)
+    fetch('http://localhost:3000/products')
       .then(res => res.json())
-      .then(setProducts);
-  }, [filter]);
+      .then(data => setProducts(data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
-    <section className="product-section">
-      {title && <h2 className="product-section-title">{title}</h2>}
-      <div className={scrollable ? 'product-section-scrollable' : ''}>
-        <div className={scrollable ? 'd-flex flex-row product-section-row' : 'row product-section-row'}>
-          {products.map(p => (
-            <div key={p.product_id} className={scrollable ? '' : 'col-md-4'}>
-              <ProductCard product={p} />
-            </div>
-          ))}
-        </div>
+    <div className="container mt-4">
+      <div className="row">
+        {products.map(product => (
+          <div className="col-md-4 mb-4" key={product.product_id}>
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 };
 

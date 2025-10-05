@@ -1,71 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/Cart.css';
+import React from 'react';
 
-const API_BASE = 'http://localhost:3000';
-const userId = 1;
-
-const Cart = () => {
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    fetch(`${API_BASE}/order-items`)
-      .then(res => res.json())
-      .then(orderItems => {
-        const cartItems = orderItems.filter(item => item.order_id === null);
-        setItems(cartItems);
-        setTotal(cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0));
-      });
-  }, []);
-
-  const handleQtyChange = async (itemId, qty) => {
-    await fetch(`${API_BASE}/order-items/${itemId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ quantity: qty })
-    });
-    setItems(items.map(i => i.order_item_id === itemId ? { ...i, quantity: qty } : i));
-    setTotal(items.map(i => i.order_item_id === itemId ? { ...i, quantity: qty } : i)
-      .reduce((sum, item) => sum + item.price * item.quantity, 0));
-  };
-
-  if (!items.length) return <div className="cart-container container my-5">Your cart is empty.</div>;
+const Cart = ({ cart, onQuantityChange, onRemove }) => {
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="cart-container container my-5">
-      <h1 className="cart-title">Cart</h1>
-      <table className="cart-table table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Specs</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(item => (
-            <tr key={item.order_item_id}>
-              <td>{item.name}</td>
-              <td>{item.specs}</td>
-              <td>{item.price} €</td>
-              <td>
-                <input
-                  type="number"
-                  value={item.quantity}
-                  min={1}
-                  onChange={e => handleQtyChange(item.order_item_id, Number(e.target.value))}
-                  style={{ width: 60 }}
-                  className="cart-qty-input"
-                />
-              </td>
-              <td>{(item.price * item.quantity).toFixed(2)} €</td>
+    <div className="container mt-4">
+      <h2>Your Cart</h2>
+      {cart.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <h3 className="cart-total">Total: {total.toFixed(2)} €</h3>
+          </thead>
+          <tbody>
+            {cart.map(item => (
+              <tr key={item.product_id}>
+                <td>{item.name}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={e => onQuantityChange(item.product_id, parseInt(e.target.value))}
+                    style={{ width: "60px" }}
+                  />
+                </td>
+                <td>{item.price} €</td>
+                <td>{item.price * item.quantity} €</td>
+                <td>
+                  <button className="btn btn-danger btn-sm" onClick={() => onRemove(item.product_id)}>
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <div className="text-end">
+        <h4>Total: {total} €</h4>
+      </div>
     </div>
   );
 };

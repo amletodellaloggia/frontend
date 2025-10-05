@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 
-const ProductSection = () => {
+const ProductSection = ({ title, filter }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -11,16 +11,31 @@ const ProductSection = () => {
       .catch(err => console.error(err));
   }, []);
 
+  // Filtering logic
+  let filteredProducts = products;
+  if (filter === 'latest') {
+    filteredProducts = [...products]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 6); // show latest 6
+  } else if (filter === 'popular') {
+    filteredProducts = [...products]
+      .sort((a, b) => (b.sold ?? 0) - (a.sold ?? 0))
+      .slice(0, 6); // show best 6 sellers
+  }
+
   return (
-    <div className="container mt-4">
-      <div className="row">
-        {products.map(product => (
-          <div className="col-md-4 mb-4" key={product.product_id}>
-            <ProductCard product={product} />
-          </div>
-        ))}
+    <section className="product-section mb-5">
+      <h2 className="mb-4">{title}</h2>
+      <div className="container">
+        <div className="row">
+          {filteredProducts.map(product => (
+            <div className="col-md-4 mb-4" key={product.product_id}>
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

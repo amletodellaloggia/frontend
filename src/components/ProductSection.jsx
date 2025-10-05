@@ -1,43 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
+import '../styles/ProductSection.css';
 
-const ProductSection = ({ title, filter }) => {
+const API_BASE = 'http://localhost:3000';
+
+/**
+ * ProductSection component
+ * - Renders a filtered list of products in a responsive grid
+ * - Limited number of items per section
+ */
+const ProductSection = ({ title, filter, maxItems = 6 }) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3000/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.error(err));
-  }, []);
-
-  // Filtering logic
-  let filteredProducts = products;
-  if (filter === 'latest') {
-    filteredProducts = [...products]
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 6); // show latest 6
-  } else if (filter === 'popular') {
-    filteredProducts = [...products]
-      .sort((a, b) => (b.sold ?? 0) - (a.sold ?? 0))
-      .slice(0, 6); // show best 6 sellers
-  }
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_BASE}/products?filter=${filter}`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [filter]);
 
   return (
-    <section className="product-section mb-5">
-      <h2 className="mb-4">{title}</h2>
-      <div className="container">
-        <div className="row">
-          {filteredProducts.map(product => (
-            <div className="col-md-4 mb-4" key={product.product_id}>
-              <ProductCard product={product} />
+    <div className="ps-section">
+      <h2 className="ps-title">{title}</h2>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="ps-grid">
+          {products.slice(0, maxItems).map((p) => (
+            <div key={p.product_id} className="ps-grid-item">
+              <ProductCard product={p} />
             </div>
           ))}
         </div>
-      </div>
-    </section>
+      )}
+    </div>
   );
 };
 
 export default ProductSection;
+
+
+
+
+
+
+
+
 

@@ -1,33 +1,40 @@
-import React, { createContext, useContext, useState } from "react";
+// src/context/CartContext.jsx
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Create Cart Context
 const CartContext = createContext();
 
-// Custom hook for easy access
 export function useCart() {
   return useContext(CartContext);
 }
 
-// Cart Provider
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    // Load cart from localStorage at start
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  // Add product to cart
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
   function addToCart(product) {
-    // If already in cart, do nothing or add quantity logic
     if (!cart.some(item => item.product_id === product.product_id)) {
-      setCart([...cart, product]);
+      setCart([...cart, { ...product, quantity: 1 }]);
     }
   }
 
-  // Remove product from cart
   function removeFromCart(productId) {
     setCart(cart.filter(item => item.product_id !== productId));
   }
 
-  // Clear cart if needed
   function clearCart() {
     setCart([]);
+  }
+
+  function updateQuantity(productId, quantity) {
+    setCart(cart.map(item => item.product_id === productId ? { ...item, quantity } : item));
   }
 
   return (
@@ -36,6 +43,7 @@ export function CartProvider({ children }) {
       addToCart,
       removeFromCart,
       clearCart,
+      updateQuantity,
     }}>
       {children}
     </CartContext.Provider>

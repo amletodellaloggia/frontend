@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+// FontAwesome icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartPlus, faCartArrowDown } from '@fortawesome/free-solid-svg-icons';
+// Context
+import { useCart } from '../context/CartContext';
+// Cart summary
+import CartSummary from '../components/CartSummary';
 
-const ProductDetail = ({ onAddToCart }) => {
+const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const { cart, addToCart, removeFromCart } = useCart();
 
   useEffect(() => {
     fetch(`http://localhost:3000/products/${id}`)
@@ -15,6 +23,9 @@ const ProductDetail = ({ onAddToCart }) => {
   if (!product) {
     return <div>Loading...</div>;
   }
+
+  // Check if product is already in cart
+  const inCart = cart.some(item => item.product_id === product.product_id);
 
   return (
     <div className="container mt-4">
@@ -31,12 +42,28 @@ const ProductDetail = ({ onAddToCart }) => {
           <p>{product.description}</p>
           <p>Price: {product.price} €</p>
           <p>Brand: {product.brand}</p>
-          <button
-            className="btn btn-success"
-            onClick={() => onAddToCart(product)}
-          >
-            Add to Cart
-          </button>
+          <div className="my-3">
+            {!inCart ? (
+              <button
+                className="btn btn-success"
+                onClick={() => addToCart(product)}
+                title="Add to cart"
+              >
+                <FontAwesomeIcon icon={faCartPlus} />
+              </button>
+            ) : (
+              <button
+                className="btn btn-danger"
+                onClick={() => removeFromCart(product.product_id)}
+                title="Remove from cart"
+              >
+                <FontAwesomeIcon icon={faCartArrowDown} />
+              </button>
+            )}
+          </div>
+          <div className="mt-4">
+            <CartSummary />
+          </div>
         </div>
       </div>
     </div>

@@ -6,20 +6,23 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import DefaultLayout from './layouts/DefaultLayout';
+import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<DefaultLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   );
 };
 

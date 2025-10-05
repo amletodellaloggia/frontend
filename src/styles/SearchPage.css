@@ -1,0 +1,26 @@
+.search-page-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-page-form input,
+.search-page-form select {
+  flex: 1 1 0;
+}
+
+.search-results-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.search-results-row .col-md-4 {
+  flex: 0 0 32%;
+}
+
+@media (max-width: 768px) {
+  .search-results-row .col-md-4 {
+    flex: 0 0 100%;
+  }
+}

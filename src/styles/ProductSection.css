@@ -1,0 +1,24 @@
+.product-section {
+  margin-bottom: 3rem;
+}
+
+.product-section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.product-section-scrollable {
+  overflow-x: auto;
+}
+
+.product-section-row {
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .product-section-row {
+    flex-direction: column!important;
+  }
+}

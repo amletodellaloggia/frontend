@@ -1,8 +1,124 @@
-.navbar-title {
-  font-weight: bold;
-  font-size: 1.25rem;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Righteous&display=swap');
+
+/* Brand styles */
+.navbar-brand {
+  display: flex;
+  align-items: center;
 }
 
-.navbar-search-form input {
-  min-width: 160px;
+.navbar-logo {
+  height: 56px;
+  width: auto;
 }
+
+/* Nav link styles */
+.nav-link:hover,
+.nav-link.fw-semibold:hover {
+  color: #B73DA0;
+}
+
+/* NON ATTIVO: grigio come richiesto */
+.nav-link.fw-semibold {
+  color: #D4D4D4;
+}
+
+/* ATTIVO: fucsia */
+.nav-link.nav-active {
+  color: #B73DA0 !important;
+  font-weight: bold !important;
+}
+
+/* Cart icon styles */
+.nav-cart-icon {
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  /* eredita il colore dal link:
+     - non attivo: #D4D4D4
+     - attivo: #B73DA0
+  */
+  transition: color 0.2s ease;
+}
+
+/* Badge (cerchio + numero) */
+.cart-badge {
+  position: absolute;
+  top: -8px;           /* leggermente più su per centratura visiva */
+  right: -10px;        /* più spazio tra cerchio e icona carrello */
+  width: 20px;
+  height: 20px;
+  background-color: #D4D4D4; /* cerchio grigio quando NON selezionato */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;  /* centra verticalmente il numero */
+  justify-content: center; /* centra orizzontalmente il numero */
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2B2B2B;      /* numero nero quando NON selezionato */
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+/* Quando il carrello è selezionato: tutto fucsia, numero bianco */
+.nav-cart-icon.nav-active .cart-badge {
+  background-color: #B73DA0; /* fucsia */
+  color: #FFFFFF;            /* numero bianco */
+}
+
+/* Brand text responsive */
+.brand-text.desktop {
+  display: inline;
+  font-family: "Righteous", sans-serif;
+}
+
+.brand-text.mobile {
+  display: none;
+  font-family: "Righteous", sans-serif;
+}
+
+@media (max-width: 450px) {
+  .brand-text.desktop { display: none; }
+  .brand-text.mobile { display: inline; }
+}
+
+/* Custom navbar layout with flex */
+.custom-navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.custom-navbar-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+  gap: 0.5rem;
+}
+
+.navbar-nav .nav-item {
+  margin: 0 0.2rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .custom-navbar-nav { gap: 0.2rem; }
+  .navbar-logo { height: 40px; }
+  .nav-cart-icon {
+    font-size: 1.1rem;
+    padding: 4px;
+  }
+  .cart-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.66rem;
+    top: -7px;
+    right: -9px; /* mantieni un po' di spazio anche su mobile */
+  }
+}
+
